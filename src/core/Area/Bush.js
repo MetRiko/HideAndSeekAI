@@ -1,7 +1,6 @@
 import { p5 } from "../P5Core"
 
 const size = 60.0
-const distance = 150.0
 
 export class Bush {
 
@@ -10,7 +9,7 @@ export class Bush {
 		this.y = y
 	}
 
-    contains(x, y) {
+    contains(x, y, distance) {
         return this.x - distance <= x && x <= this.x + distance &&
                this.y - distance <= y && y <= this.y + distance;
     }
