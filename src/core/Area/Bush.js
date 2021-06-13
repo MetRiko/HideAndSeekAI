@@ -14,7 +14,8 @@ export class Bush {
     }
 
 	collision(otherPosition) {
-		return p5.createVector(this.x, this.y).copy().sub(otherPosition).mag() < size * 0.5
+		// console.log(this.size)
+		return this.position.copy().sub(otherPosition).mag() < this.size * 1.3
 	}
 
 	update() {
