@@ -19,7 +19,7 @@ export class Bush {
 	}
 
 	render(p5) {
-		p5.fill(0, 255, 0)
+		p5.fill(0, 192, 0)
 		p5.noStroke()
 		p5.circle(this.x, this.y, size)
 	}

@@ -18,7 +18,6 @@ export const setupP5 = (p5) => {
 		player.update()
 
 		// render
-		p5.background(100)
 		area.render(p5)
 		player.render(p5)
 		drawCircle()

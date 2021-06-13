@@ -39,8 +39,9 @@ export class Area {
 	}
 
 	render(p5) {
-        p5.background(100)
-		p5.fill(255, 0, 0)
+        p5.background(200)
+        p5.fill(100, 100, 100)
+        p5.rect(20, 20, this.width-40, this.height-40, 20);
 		this.bushes.forEach(function(entry) {
             entry.render(p5)
         })
