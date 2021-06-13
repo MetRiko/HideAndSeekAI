@@ -1,8 +1,9 @@
-
 import { p5 } from "./P5Core"
 
+import { Area } from "./Area/Area"
 import { Player } from "./Player/Player"
 
+const area = new Area(1280, 720)
 const player = new Player(100, 100)
 
 export const setupP5 = (p5) => {
@@ -13,10 +14,12 @@ export const setupP5 = (p5) => {
 	p5.draw = () => {
 
 		// udpate
+		area.update()
 		player.update()
 
 		// render
 		p5.background(100)
+		area.render(p5)
 		player.render(p5)
 		drawCircle()
 	}
