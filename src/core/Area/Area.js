@@ -61,7 +61,7 @@ export class Area {
 	update() {
         this.player.update()
         this.player.hidden = this.isCollisionOfPlayerAndBush(this.player)
-        this.enemies.forEach(function(entry) {
+        this.enemies.forEach((entry) => {
             entry.update(this.player)
         })
         this.coin.update(this.player)
