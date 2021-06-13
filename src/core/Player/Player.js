@@ -10,11 +10,8 @@ export class Player {
 		this.moveVect = p5.createVector(0, 0)
 
 		p5.mouseClicked = () => {
-			console.log(p5.mouseX)
-			console.log(p5.mouseY)
 			this.target = p5.createVector(p5.mouseX, p5.mouseY)
 			this.moveVect = this.target.copy().sub(this.position).normalize().mult(speed)
-			console.log(this)
 		}
 	}
 
