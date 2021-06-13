@@ -8,9 +8,7 @@ export const setupP5 = (p5) => {
 
 	p5.setup = () => {
 		p5.createCanvas(1280, 720, p5.P2D)
-		enemy = new Enemy(200, 100)
 		area = new Area(1280, 720)
-		player = new Player(600, 300)
 	}
 	p5.draw = () => {
 
