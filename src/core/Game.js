@@ -1,13 +1,23 @@
 
 import { p5 } from "./P5Core"
 
+import { Player } from "./Player/Player"
+
+const player = new Player(100, 100)
+
 export const setupP5 = (p5) => {
 
 	p5.setup = () => {
 		p5.createCanvas(1280, 720, p5.P2D)
 	}
 	p5.draw = () => {
+
+		// udpate
+		player.update()
+
+		// render
 		p5.background(100)
+		player.render(p5)
 		drawCircle()
 	}
 }
