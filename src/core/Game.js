@@ -12,7 +12,6 @@ let area = null
 export const setupP5 = (p5) => {
 
 	p5.setup = () => {
-		player = new Player(100, 100)
 		enemy = new Enemy(200, 100)
 		area = new Area(1280, 720)
 		p5.createCanvas(1280, 720, p5.P2D)
