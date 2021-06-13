@@ -5,7 +5,7 @@ import { Coin } from "./Coin"
 import { Player } from "../Player/Player"
 import Enemy from "../Enemy/Enemy"
 
-const bushes_amount = 10
+const bushes_amount = 8
 const bushes_distance = 150.0
 const area_border = 20.0
 
