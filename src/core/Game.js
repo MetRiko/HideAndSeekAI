@@ -1,23 +1,29 @@
 
+import Enemy from "./Enemy/Enemy"
 import { p5 } from "./P5Core"
 
 import { Player } from "./Player/Player"
 
-const player = new Player(100, 100)
+let player = null
+let enemy = null
 
 export const setupP5 = (p5) => {
 
 	p5.setup = () => {
+		player = new Player(100, 100)
+		enemy = new Enemy(200, 100)
 		p5.createCanvas(1280, 720, p5.P2D)
 	}
 	p5.draw = () => {
 
 		// udpate
 		player.update()
+		enemy.update()
 
 		// render
-		p5.background(100)
+		p5.background(20)
 		player.render(p5)
+		enemy.render(p5)
 		drawCircle()
 	}
 }
