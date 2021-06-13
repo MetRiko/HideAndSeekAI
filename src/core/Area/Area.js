@@ -58,11 +58,11 @@ export class Area {
         this.enemies.push(new Enemy(200, 100))
     }
 
-	update(player) {
+	update() {
         this.player.update()
         this.player.hidden = this.isCollisionOfPlayerAndBush(this.player)
         this.enemies.forEach(function(entry) {
-            entry.update(player)
+            entry.update(this.player)
         })
         this.coin.update(this.player)
 	}
