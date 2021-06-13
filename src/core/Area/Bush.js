@@ -13,6 +13,10 @@ export class Bush {
                this.position.y - distance <= y && y <= this.position.y + distance;
     }
 
+	collision(otherPosition) {
+		return this.position.copy().sub(otherPosition).mag() < this.size * 1.3
+	}
+
 	update() {
 	}
 

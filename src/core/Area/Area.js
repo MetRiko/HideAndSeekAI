@@ -30,7 +30,9 @@ export class Area {
         }
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
         
-        // this.time = new Date().getTime()
+        this.time = 0
+        const interval = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
+        //clearInterval(interval)
 	}
 
     new_bush() {
@@ -56,13 +58,21 @@ export class Area {
         this.enemies.push(new Enemy(200, 100))
     }
 
-	update() {
+	update(player) {
         this.player.update()
-        this.enemies.forEach(entry => {
-            entry.update(this.player)
+        this.player.hidden = this.isCollisionOfPlayerAndBush(this.player)
+        this.enemies.forEach(function(entry) {
+            entry.update(player)
         })
         this.coin.update(this.player)
 	}
+
+    isCollisionOfPlayerAndBush(player) {
+        for (const bush of this.bushes) {
+            if (bush.collision(player.position, player.radius)) return true
+        }
+        return false
+    }
 
 	render(p5) {
         // p5.background(200)
@@ -72,6 +82,7 @@ export class Area {
             entry.render(p5)
         })
         this.coin.render(p5)
+        p5.text('Time: ' + this.time, 10, 80);
         this.player.render(p5)
         this.enemies.forEach(function(entry) {
             entry.render(p5)
