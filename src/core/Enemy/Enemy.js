@@ -1,5 +1,6 @@
 import { p5 } from "../P5Core"
 import StateMachine from "./StateMachine"
+import Utils from "../../utils/Utils"
 
 class StateIdle {
 	constructor(machine, enemy) {
@@ -97,6 +98,10 @@ export default class Enemy {
 		machine.replaceStates(behaviours, this)
 		machine.changeState("idle")
 		this.rotation = 0.0
+		this.viewRange = 320
+		this.viewReactionRange = 150
+		this.viewCurrentRange = this.viewReactionRange
+		this.viewAngle = 0.3
 	}
 
 	move(vec) {
@@ -104,12 +109,45 @@ export default class Enemy {
 		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
 	}
 
-	update() {
+	update(player) {
 		this.stateMachine.update()
+		this.updateView(player)
+	}
+
+	updateView(player) {
+		const {pos, viewRange, rotation, viewAngle} = this
+		const contains = Utils.arcContainsPoint(pos.x, pos.y, viewRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y)
+		if (contains) {
+			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+		}
+		else {
+			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
+		}
+	}
+
+	renderView(p5) {
+
+		const {pos, rotation, viewRange, viewAngle, viewCurrentRange} = this
+
+		// p5.push()
+		// p5.translate(x, y)
+		p5.push()
+		p5.translate(pos.x, pos.y)
+		p5.fill(255, 255, 255, 10)
+		p5.noStroke()
+		p5.arc(0, 0, viewRange * 2.0, viewRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+		p5.fill(255, 100, 10, 30)
+		p5.noStroke()
+		p5.arc(0, 0, viewCurrentRange * 2.0, viewCurrentRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+		p5.pop()
+		// p5.pop()
+		// p5.rotate(this.rotation)
+
 	}
 
 	render(p5) {
 		this.stateMachine.render(p5)
+		this.renderView(p5)
 
 		const {x, y} = this.pos
 		// p5.noStroke()

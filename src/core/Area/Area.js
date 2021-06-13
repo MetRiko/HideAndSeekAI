@@ -58,8 +58,8 @@ export class Area {
 
 	update() {
         this.player.update()
-        this.enemies.forEach(function(entry) {
-            entry.update()
+        this.enemies.forEach(entry => {
+            entry.update(this.player)
         })
         this.coin.update(this.player)
 	}
