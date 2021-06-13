@@ -30,7 +30,9 @@ export class Area {
         }
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
         
-        // this.time = new Date().getTime()
+        this.time = 0
+        const interval = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
+        //clearInterval(interval)
 	}
 
     new_bush() {
@@ -72,6 +74,7 @@ export class Area {
             entry.render(p5)
         })
         this.coin.render(p5)
+        p5.text('Time: ' + this.time, 10, 80);
         this.player.render(p5)
         this.enemies.forEach(function(entry) {
             entry.render(p5)
