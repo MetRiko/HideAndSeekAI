@@ -31,8 +31,8 @@ export class Area {
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
         
         this.time = 0
-        const interval = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
-        //clearInterval(interval)
+        const interval_time = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
+        const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
 	}
 
     new_bush() {
