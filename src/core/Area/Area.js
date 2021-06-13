@@ -58,11 +58,19 @@ export class Area {
 
 	update() {
         this.player.update()
+        this.player.hidden = this.isCollisionOfPlayerAndBush(this.player)
         this.enemies.forEach(function(entry) {
             entry.update()
         })
         this.coin.update(this.player)
 	}
+
+    isCollisionOfPlayerAndBush(player) {
+        for (const bush of this.bushes) {
+            if (bush.collision(player.position, player.radius)) return true
+        }
+        return false
+    }
 
 	render(p5) {
         p5.background(200)

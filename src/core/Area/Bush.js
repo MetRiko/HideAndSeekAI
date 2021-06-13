@@ -14,6 +14,10 @@ export class Bush {
                this.y - distance <= y && y <= this.y + distance;
     }
 
+	collision(otherPosition) {
+		return p5.createVector(this.x, this.y).copy().sub(otherPosition).mag() < size * 0.5
+	}
+
 	update() {
 	}
 
