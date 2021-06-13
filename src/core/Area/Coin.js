@@ -26,7 +26,7 @@ export class Coin {
 	}
 
 	update(player) {
-		if(this.contains(player.x, player.y, 30)) {
+		if(this.contains(player.position.x, player.position.y, 30)) {
 			this.score += 1
 			this.new_position()
 		}

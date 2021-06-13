@@ -1,12 +1,7 @@
-
-import Enemy from "./Enemy/Enemy"
 import { p5 } from "./P5Core"
 
 import { Area } from "./Area/Area"
-import { Player } from "./Player/Player"
 
-let player = null
-let enemy = null
 let area = null
 
 export const setupP5 = (p5) => {
@@ -21,14 +16,10 @@ export const setupP5 = (p5) => {
 
 		// udpate
 		area.update()
-		player.update()
-		enemy.update()
 
 		// render
 		p5.background(20)
 		area.render(p5)
-		player.render(p5)
-		enemy.render(p5)
 	}
 
 	// p5.mouseClicked = (event) => {

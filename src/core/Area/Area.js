@@ -2,8 +2,10 @@ import { p5 } from "../P5Core"
 
 import { Bush } from "./Bush"
 import { Coin } from "./Coin"
+import { Player } from "../Player/Player"
+import Enemy from "../Enemy/Enemy"
 
-const bushes_amount = 10
+const bushes_amount = 8
 const bushes_distance = 150.0
 const area_border = 20.0
 
@@ -12,15 +14,23 @@ export class Area {
 	constructor(width, height) {
 		this.width = width
 		this.height = height
+
+        this.player = new Player(600, 300)
+        this.enemies = []
+        this.new_enemy()
+
         this.x_min = area_border
         this.x_max = width-(2*area_border)
         this.y_min = area_border
         this.y_max = height-(2*area_border)
+        
         this.bushes = []
         for (let i = 0; i < bushes_amount; i++) {
             this.bushes.push(this.new_bush());
         }
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
+        
+        // this.time = new Date().getTime()
 	}
 
     new_bush() {
@@ -42,12 +52,16 @@ export class Area {
         return new Bush(x, y)
     }
 
-    new_coin() {
-        this.coin = new Coin()
+    new_enemy() {
+        this.enemies.push(new Enemy(200, 100))
     }
 
 	update() {
-
+        this.player.update()
+        this.enemies.forEach(function(entry) {
+            entry.update()
+        })
+        this.coin.update(this.player)
 	}
 
 	render(p5) {
@@ -58,5 +72,9 @@ export class Area {
             entry.render(p5)
         })
         this.coin.render(p5)
+        this.player.render(p5)
+        this.enemies.forEach(function(entry) {
+            entry.render(p5)
+        })
 	}
 }
