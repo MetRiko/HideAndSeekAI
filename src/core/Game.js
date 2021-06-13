@@ -1,25 +1,33 @@
 
+import Enemy from "./Enemy/Enemy"
 import { p5 } from "./P5Core"
 
+import { Area } from "./Area/Area"
 import { Player } from "./Player/Player"
 
 let player = null
+let enemy = null
 
 export const setupP5 = (p5) => {
 
 	p5.setup = () => {
+		player = new Player(100, 100)
+		enemy = new Enemy(200, 100)
 		p5.createCanvas(1280, 720, p5.P2D)
 		player = new Player(600, 300)
 	}
 	p5.draw = () => {
 
 		// udpate
+		area.update()
 		player.update()
+		enemy.update()
 
 		// render
-		p5.background(100)
+		p5.background(20)
+		area.render(p5)
 		player.render(p5)
-		// drawCircle()
+		enemy.render(p5)
 	}
 
 	// p5.mouseClicked = (event) => {
