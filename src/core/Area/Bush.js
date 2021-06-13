@@ -14,7 +14,6 @@ export class Bush {
     }
 
 	collision(otherPosition) {
-		// console.log(this.size)
 		return this.position.copy().sub(otherPosition).mag() < this.size * 1.3
 	}
 
