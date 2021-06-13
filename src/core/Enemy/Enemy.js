@@ -1,43 +1,5 @@
 import { p5 } from "../P5Core"
-
-
-
-class StateMachine {
-
-	constructor() {
-		this.states = {}
-		this.currentStateId = null
-		this.nextStateId = null
-	}
-	
-	addState(stateId, stateClass, ...args) {
-		this.states[stateId] = new stateClass(this, ...args)
-	}
-
-	replaceStates(states, ...args) {
-		Object.entries(states).forEach(([stateId, stateClass]) => this.addState(stateId, stateClass, ...args))
-	}
-
-	changeState(stateId) {
-		this.nextStateId = stateId
-	}
-
-	update() {
-		const state = this.states[this.currentStateId]
-		if (this.nextStateId !== this.currentStateId) {
-			state?.finish()
-			this.currentStateId = this.nextStateId
-			const newState = this.states[this.currentStateId]
-			newState?.init()
-			// this.nextStateId = null
-		}
-		else if (state) {
-			state?.update(this.changeState)
-		}
-	}
-
-}
-
+import StateMachine from "./StateMachine"
 
 class StateIdle {
 	constructor(machine, enemy) {
@@ -46,24 +8,84 @@ class StateIdle {
 		this.enemy = enemy
 	}
 	init() {
-		this.interval = setInterval(() => {
-			console.log("nice!")
-			this.enemy.move(p5.createVector(10.0, 0.0))
-		}, 1000.0)
 		setTimeout(() => {
-			this.machine.changeState(null)
-		}, 5000.0)
-	}
-	update() {
-		this.enemy.move(p5.createVector(0.4, 0.0))
+			this.machine.changeState("moveToRandomPosition")
+		}, 2000.0)
 	}
 	finish() {
 		clearInterval(this.interval)
 	}
 }
 
+class StateMoveToRandomPosition {
+
+	moveSpeed = 2.0 
+
+	constructor(machine, enemy) {
+		this.machine = machine
+		this.enemy = enemy
+		this.targetPos = null
+	}
+	init() {
+		this.targetPos = p5.createVector(p5.random(p5.width), p5.random(p5.height))
+	}
+	update() {
+		const vec = this.targetPos.copy().sub(this.enemy.pos).normalize().mult(this.moveSpeed)
+		this.enemy.move(vec)
+		const nextVec = this.targetPos.copy().sub(this.enemy.pos)
+		const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
+		const difY = Math.sign(vec.y) !== Math.sign(nextVec.y)
+		// console.log(vec, nextVec)
+		if (difX || difY) {
+			this.machine.changeState("lookAround")
+			this.enemy.pos = this.targetPos
+		}
+	}
+	render(p5) {
+		const vec = this.enemy.pos.copy().sub(this.targetPos).normalize().mult(15.0)
+		const lineEndPos = this.targetPos.copy().add(vec)
+
+		p5.stroke(80, 20, 20)
+		p5.strokeWeight(2.0)
+		p5.line(this.enemy.pos.x, this.enemy.pos.y, lineEndPos.x, lineEndPos.y)
+		p5.noFill()
+		p5.stroke(80, 20, 20)
+		p5.strokeWeight(2.0)
+		p5.circle(this.targetPos.x, this.targetPos.y, 30.0)
+		p5.noStroke()
+		p5.fill(80, 20, 20)
+		p5.circle(this.targetPos.x, this.targetPos.y, 4.0)
+	}
+}
+
+class StateLookAround {
+	constructor(machine, enemy) {
+		this.machine = machine
+		this.enemy = enemy
+	}
+	init() {
+		// this.interval = setInterval(() => {
+		// 	console.log("nice!")
+		// 	this.enemy.move(p5.createVector(10.0, 0.0))
+		// }, 1000.0)
+		// setTimeout(() => {
+		// 	this.machine.changeState(null)
+		// }, 5000.0)
+		console.log("LOOK AROUND")
+		this.machine.changeState("idle")
+	}
+	update() {
+		// this.enemy.move(p5.createVector(0.4, 0.0))
+	}
+	finish() {
+		// clearInterval(this.interval)
+	}
+}
+
 const behaviours = {
-	"idle": StateIdle
+	"idle": StateIdle,
+	"moveToRandomPosition": StateMoveToRandomPosition,
+	"lookAround": StateLookAround
 }
 
 export default class Enemy {
@@ -74,10 +96,12 @@ export default class Enemy {
 		this.stateMachine = machine
 		machine.replaceStates(behaviours, this)
 		machine.changeState("idle")
+		this.rotation = 0.0
 	}
 
 	move(vec) {
 		this.pos.add(vec)
+		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
 	}
 
 	update() {
@@ -85,19 +109,26 @@ export default class Enemy {
 	}
 
 	render(p5) {
+		this.stateMachine.render(p5)
+
 		const {x, y} = this.pos
 		// p5.noStroke()
+		p5.push()
+		p5.translate(x, y)
+		p5.rotate(this.rotation)
 		p5.stroke(255 * 0.4, 100 * 0.2, 0)
 		p5.strokeWeight(4.0)
 		// p5.fill(255, 100, 0)
 		p5.fill(255 * 0.8, 100 * 0.2, 0)
 		// p5.rotate(Math.PI * 0.5)
-		p5.circle(x, y, 34.0)
-
+		p5.circle(0, 0, 34.0)
+		
 		p5.noStroke()
 		p5.fill(20, 0, 0)
 		// p5.fill(255 * 0.8, 0, 0)
-		p5.circle(x + 7.0, y + 5.5, 8.0)
-		p5.circle(x + 7.0, y - 5.5, 8.0)
+		p5.circle(7.0, 5.5, 8.0)
+		p5.circle(7.0, -5.5, 8.0)
+		p5.rotate(0.0)
+		p5.pop()
 	}
 }
