@@ -5,6 +5,8 @@ import { Coin } from "./Coin"
 import { Player } from "../Player/Player"
 import Enemy from "../Enemy/Enemy"
 
+import MinutesTimer from 'minutes-timer'
+
 const bushes_amount = 8
 const bushes_distance = 150.0
 const area_border = 20.0
@@ -31,6 +33,8 @@ export class Area {
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
         
         this.time = 0
+        this.minutesTimer = new MinutesTimer()
+        this.minutesTimer.start();
         const interval_time = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
         const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
 	}
@@ -82,7 +86,8 @@ export class Area {
             entry.render(p5)
         })
         this.coin.render(p5)
-        p5.text('Time: ' + this.time, 10, 80);
+        //p5.text('Time: ' + this.time, 10, 80);
+        p5.text('Time: ' + this.minutesTimer.display, 10, 40)
         this.player.render(p5)
         this.enemies.forEach(function(entry) {
             entry.render(p5)

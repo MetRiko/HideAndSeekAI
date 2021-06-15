@@ -37,7 +37,7 @@ export class Coin {
 		p5.circle(this.position.x, this.position.y, size)
 		p5.textSize(32);
 		p5.fill(255, 255, 255)
-		p5.text('Score: ' + this.score, 10, 40);
+		p5.text('Score: ' + this.score, 10, 80);
 	}
 
 }
