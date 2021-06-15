@@ -1,8 +1,10 @@
 import { p5 } from "./P5Core"
 
 import { Area } from "./Area/Area"
+import { EndGame } from "./EndGame"
 
 let area = null
+let endGameScreen = null
 
 export const setupP5 = (p5) => {
 
@@ -13,16 +15,27 @@ export const setupP5 = (p5) => {
 	p5.draw = () => {
 
 		// udpate
-		area.update()
+		if (!area.endGame) {
+			area.update()
+		}
 
 		// render
 		p5.background(20)
-		area.render(p5)
+		if (area.endGame) {
+			endGameScreen = new EndGame(area.endTime, area.coin.score)
+			endGameScreen.render()
+		} else {
+			area.render(p5)
+		}
 	}
 
 	// p5.mouseClicked = (event) => {
 	// 	player.mouseClicked(event)
 	// }
+}
+
+const startNewGame = () => {
+	area = new Area(1280, 720)
 }
 
 // const drawCircle = () => {

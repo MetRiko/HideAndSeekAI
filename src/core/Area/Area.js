@@ -35,6 +35,9 @@ export class Area {
         this.minutesTimer = new MinutesTimer()
         this.minutesTimer.start();
         const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
+
+        this.endGame = false
+        this.endTime = null
 	}
 
     new_bush() {
@@ -65,6 +68,10 @@ export class Area {
         this.player.hidden = this.isCollisionOfPlayerAndBush(this.player)
         this.enemies.forEach((entry) => {
             entry.update(this.player)
+            if (entry.playerCaught) {
+                this.endGame = true
+                this.endTime = this.minutesTimer.display
+            }
         })
         this.coin.update(this.player)
 	}

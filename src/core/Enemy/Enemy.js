@@ -1,87 +1,9 @@
 import { p5 } from "../P5Core"
 import StateMachine from "./StateMachine"
 import Utils from "../../utils/Utils"
-
-class StateIdle {
-	constructor(machine, enemy) {
-		this.interval = null
-		this.machine = machine
-		this.enemy = enemy
-	}
-	init() {
-		setTimeout(() => {
-			this.machine.changeState("moveToRandomPosition")
-		}, 2000.0)
-	}
-	finish() {
-		clearInterval(this.interval)
-	}
-}
-
-class StateMoveToRandomPosition {
-
-	moveSpeed = 2.0 
-
-	constructor(machine, enemy) {
-		this.machine = machine
-		this.enemy = enemy
-		this.targetPos = null
-	}
-	init() {
-		this.targetPos = p5.createVector(p5.random(p5.width), p5.random(p5.height))
-	}
-	update() {
-		const vec = this.targetPos.copy().sub(this.enemy.pos).normalize().mult(this.moveSpeed)
-		this.enemy.move(vec)
-		const nextVec = this.targetPos.copy().sub(this.enemy.pos)
-		const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
-		const difY = Math.sign(vec.y) !== Math.sign(nextVec.y)
-		// console.log(vec, nextVec)
-		if (difX || difY) {
-			this.machine.changeState("lookAround")
-			this.enemy.pos = this.targetPos
-		}
-	}
-	render(p5) {
-		const vec = this.enemy.pos.copy().sub(this.targetPos).normalize().mult(15.0)
-		const lineEndPos = this.targetPos.copy().add(vec)
-
-		p5.stroke(80, 20, 20)
-		p5.strokeWeight(2.0)
-		p5.line(this.enemy.pos.x, this.enemy.pos.y, lineEndPos.x, lineEndPos.y)
-		p5.noFill()
-		p5.stroke(80, 20, 20)
-		p5.strokeWeight(2.0)
-		p5.circle(this.targetPos.x, this.targetPos.y, 30.0)
-		p5.noStroke()
-		p5.fill(80, 20, 20)
-		p5.circle(this.targetPos.x, this.targetPos.y, 4.0)
-	}
-}
-
-class StateLookAround {
-	constructor(machine, enemy) {
-		this.machine = machine
-		this.enemy = enemy
-	}
-	init() {
-		// this.interval = setInterval(() => {
-		// 	console.log("nice!")
-		// 	this.enemy.move(p5.createVector(10.0, 0.0))
-		// }, 1000.0)
-		// setTimeout(() => {
-		// 	this.machine.changeState(null)
-		// }, 5000.0)
-		console.log("LOOK AROUND")
-		this.machine.changeState("idle")
-	}
-	update() {
-		// this.enemy.move(p5.createVector(0.4, 0.0))
-	}
-	finish() {
-		// clearInterval(this.interval)
-	}
-}
+import { StateLookAround } from "./States/StateLookAround"
+import { StateIdle } from "./States/StateIdle"
+import { StateMoveToRandomPosition } from "./States/StateMoveToRandomPosition"
 
 const behaviours = {
 	"idle": StateIdle,
@@ -103,6 +25,7 @@ export default class Enemy {
 		this.viewCurrentRange = this.viewReactionRange
 		this.catchRange = 0
 		this.viewAngle = 0.3
+		this.playerCaught = false
 	}
 
 	move(vec) {
@@ -121,7 +44,7 @@ export default class Enemy {
 		const seePlayer = Utils.arcContainsPoint(pos.x, pos.y, viewCurrentRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
 		const caughtPlayer = Utils.arcContainsPoint(pos.x, pos.y, catchRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
 		if (caughtPlayer) {
-			// TODO: Game over
+			this.playerCaught = true
 		}
 		if (seePlayer) {
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange + 3.0)
