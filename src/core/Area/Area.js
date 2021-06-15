@@ -25,17 +25,15 @@ export class Area {
         this.x_max = width-(2*area_border)
         this.y_min = area_border
         this.y_max = height-(2*area_border)
-        
+
         this.bushes = []
         for (let i = 0; i < bushes_amount; i++) {
             this.bushes.push(this.new_bush());
         }
         this.coin = new Coin(this.x_min, this.x_max, this.y_min, this.y_max)
-        
-        this.time = 0
+
         this.minutesTimer = new MinutesTimer()
         this.minutesTimer.start();
-        const interval_time = setInterval(() => {this.time += 1}, 1000.0) //wykonuj metodę {...} co 1000 ms
         const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
 	}
 
@@ -79,14 +77,10 @@ export class Area {
     }
 
 	render(p5) {
-        // p5.background(200)
-        // p5.fill(100, 100, 100)
-        // p5.rect(area_border, area_border, this.width-(2*area_border), this.height-(2*area_border), 20);
 		this.bushes.forEach(function(entry) {
             entry.render(p5)
         })
         this.coin.render(p5)
-        //p5.text('Time: ' + this.time, 10, 80);
         p5.text('Time: ' + this.minutesTimer.display, 10, 40)
         this.player.render(p5)
         this.enemies.forEach(function(entry) {

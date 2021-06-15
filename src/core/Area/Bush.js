@@ -20,7 +20,7 @@ export class Bush {
 	update() {
 	}
 
-	render(p5) {        
+	render(p5) {
         p5.noStroke()
         p5.push()
         p5.translate(this.position)
