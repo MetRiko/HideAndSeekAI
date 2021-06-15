@@ -101,6 +101,7 @@ export default class Enemy {
 		this.viewRange = 320
 		this.viewReactionRange = 150
 		this.viewCurrentRange = this.viewReactionRange
+		this.catchRange = 0
 		this.viewAngle = 0.3
 	}
 
@@ -115,19 +116,30 @@ export default class Enemy {
 	}
 
 	updateView(player) {
-		const {pos, viewRange, rotation, viewAngle} = this
-		const contains = Utils.arcContainsPoint(pos.x, pos.y, viewRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y)
-		if (contains) {
+		const {pos, viewRange, viewCurrentRange, catchRange, rotation, viewAngle} = this
+		const contains = Utils.arcContainsPoint(pos.x, pos.y, viewRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		const seePlayer = Utils.arcContainsPoint(pos.x, pos.y, viewCurrentRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		const caughtPlayer = Utils.arcContainsPoint(pos.x, pos.y, catchRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		if (caughtPlayer) {
+			// TODO: Game over
+		}
+		if (seePlayer) {
+			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange + 3.0)
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+		}
+		else if (contains) {
+			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
 		}
 		else {
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
+			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
 		}
 	}
 
 	renderView(p5) {
 
-		const {pos, rotation, viewRange, viewAngle, viewCurrentRange} = this
+		const {pos, rotation, viewRange, viewAngle, viewCurrentRange, catchRange} = this
 
 		// p5.push()
 		// p5.translate(x, y)
@@ -139,6 +151,11 @@ export default class Enemy {
 		p5.fill(255, 100, 10, 30)
 		p5.noStroke()
 		p5.arc(0, 0, viewCurrentRange * 2.0, viewCurrentRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+		
+		p5.fill(255, 0, 0, 20)
+		p5.noStroke()
+		p5.arc(0, 0, catchRange * 2.0, catchRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+
 		p5.pop()
 		// p5.pop()
 		// p5.rotate(this.rotation)
