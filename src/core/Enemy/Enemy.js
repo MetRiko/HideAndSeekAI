@@ -4,11 +4,13 @@ import Utils from "../../utils/Utils"
 import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateMoveToRandomPosition } from "./States/StateMoveToRandomPosition"
+import { StateLookForPlayer } from "./States/StateLookForPlayer"
 
 const behaviours = {
 	"idle": StateIdle,
 	"moveToRandomPosition": StateMoveToRandomPosition,
-	"lookAround": StateLookAround
+	"lookAround": StateLookAround,
+	"lookForPlayer": StateLookForPlayer
 }
 
 export default class Enemy {
@@ -16,9 +18,6 @@ export default class Enemy {
 	constructor(x, y) {
 		this.pos = p5.createVector(x, y)
 		const machine = new StateMachine()
-		this.stateMachine = machine
-		machine.replaceStates(behaviours, this)
-		machine.changeState("idle")
 		this.rotation = 0.0
 		this.viewRange = 320
 		this.viewReactionRange = 150
@@ -26,6 +25,11 @@ export default class Enemy {
 		this.catchRange = 0
 		this.viewAngle = 0.3
 		this.playerCaught = false
+		this.lastSeenPlayerPosition = null
+
+		this.stateMachine = machine
+		machine.replaceStates(behaviours, this)
+		machine.changeState("idle")
 	}
 
 	move(vec) {
@@ -49,14 +53,21 @@ export default class Enemy {
 		if (seePlayer) {
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange + 3.0)
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+			this.lastSeenPlayerPosition = player.position.copy()
 		}
 		else if (contains) {
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
+			if (this.lastSeenPlayerPosition != null) {
+				this.stateMachine.changeState("lookForPlayer")
+			}
 		}
 		else {
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
+			if (this.lastSeenPlayerPosition != null) {
+				this.stateMachine.changeState("lookForPlayer")
+			}
 		}
 	}
 
