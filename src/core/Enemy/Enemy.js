@@ -8,9 +8,11 @@ import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
-import { StateGoToBush} from "./States/StateGoToBush"
+import { StateGoToBush } from "./States/StateGoToBush"
+import { StateCheckBush } from "./States/StateCheckBush"
 import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
 import { StateLookAround360 } from "./States/StateLookAround360"
+import { StateCatched } from "./States/StateCatched"
 
 const behaviours = {
 	"idle": StateIdle,
@@ -19,7 +21,9 @@ const behaviours = {
 	"playerNoticed": StatePlayerNoticed,
 	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
 	"lookAround360": StateLookAround360,
-	"goToTheNearestBush": StateGoToBush
+	"goToBush": StateGoToBush,
+	"checkBush": StateCheckBush,
+	"catched": StateCatched
 }
 
 const speed = 2.0
@@ -106,21 +110,19 @@ export default class Enemy {
 		}
 	}
 
-	getCoordNearestBush() {
+	getNearestBush() {
 		let best_distance = Infinity
-		let candidate_x = null
-		let candidate_y = null
+		let candidate_bush = null
 		for (const bush of this.area.bushes) {
 			let x1 = bush.position.x
 			let y1 = bush.position.y
 			let distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
 			if(distance < best_distance) {
 				best_distance = distance
-				candidate_x = x1
-				candidate_y = y1
+				candidate_bush = bush
 			}
         }
-		return p5.createVector(candidate_x, candidate_y)
+		return candidate_bush
 	}
 
 	_checkIfPlayerIsInsideGrayView(player) {

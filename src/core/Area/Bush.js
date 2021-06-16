@@ -6,6 +6,7 @@ export class Bush {
         this.position = p5.createVector(x, y)
         this.rotate = Math.random()
         this.size = p5.random(20, 40)
+        this.player_inside = false
 	}
 
     contains(x, y, distance) {

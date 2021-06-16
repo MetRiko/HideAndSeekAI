@@ -6,7 +6,8 @@ export class StateIdle {
 	}
 	init() {
 		setTimeout(() => {
-			this.machine.changeState("goToRandomPosition")
+			//this.machine.changeState("goToRandomPosition")
+			this.machine.changeState("goToBush")
 		}, 2000.0);
 	}
 

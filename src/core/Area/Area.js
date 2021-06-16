@@ -69,18 +69,29 @@ export class Area {
         this.enemies.forEach((entry) => {
             entry.update(this.player)
             if (entry.playerCaught) {
-                this.endGame = true
-                this.endTime = this.minutesTimer.display
+                this.end()
             }
         })
         this.coin.update(this.player)
 	}
 
+    end() {
+        this.endGame = true
+        this.endTime = this.minutesTimer.display
+    }
+
     isCollisionOfPlayerAndBush(player) {
+        let result = false
         for (const bush of this.bushes) {
-            if (bush.collision(player.position, player.radius)) return true
+            if (bush.collision(player.position, player.radius)) {
+                result = true
+                bush.player_inside = true
+            }
+            else {
+                bush.player_inside = false
+            }
         }
-        return false
+        return result
     }
 
 	render(p5) {
