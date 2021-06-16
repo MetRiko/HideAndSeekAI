@@ -2,6 +2,11 @@ import { p5 } from "../P5Core"
 
 const speed = 5.0
 
+const keyW = 87
+const keyS = 83
+const keyA = 65
+const keyD = 68
+
 export class Player {
 
 	constructor(x, y) {
@@ -12,19 +17,54 @@ export class Player {
 		this.moveVect = p5.createVector(0, 0)
 		this.rotation = 0.0
 
-		p5.mouseClicked = () => {
-			this.target = p5.createVector(p5.mouseX, p5.mouseY)
-			this.moveVect = this.target.copy().sub(this.position).normalize().mult(speed)
-			this.rotation = p5.createVector(1.0, 0.0).angleBetween(this.moveVect)
-		}
+		// p5.mouseClicked = () => {
+		// 	this.target = p5.createVector(p5.mouseX, p5.mouseY)
+		// 	this.moveVect = this.target.copy().sub(this.position).normalize().mult(speed)
+		// 	this.rotation = p5.createVector(1.0, 0.0).angleBetween(this.moveVect)
+		// }
 	}
 
 	update() {
-		if (this.isTooFar()) {
-			this.position = this.target
+		// if (this.isTooFar()) {
+		// 	this.position = this.target
+		// }
+		// else {
+		// 	this.position.add(this.moveVect)
+		// }
+		this.updateMovement()
+	}
+
+	move(vec) {
+		this.position.add(vec)
+		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
+	}
+
+	getForwardVector() {
+		return p5.createVector(1.0, 0.0).rotate(this.rotation)
+	}
+
+	updateMovement() {
+		let vec = p5.createVector(0.0, 0.0)
+		if (p5.keyIsDown(keyW)) {
+			vec.y = -1.0
 		}
-		else {
-			this.position.add(this.moveVect)
+		else if (p5.keyIsDown(keyS)) {
+			vec.y = 1.0
+		}
+		if (p5.keyIsDown(keyA)) {
+			vec.x = -1.0
+		}
+		else if (p5.keyIsDown(keyD)) {
+			vec.x = 1.0
+		}
+		if (vec.x !== 0 || vec.y !== 0) {
+
+			const forward = this.getForwardVector()
+			const deltaAngle = forward.angleBetween(vec)
+			forward.rotate(deltaAngle * 0.15)
+			this.move(forward.mult(3.0))
+			// vec.normalize().mult(2.0)
+			// this.move(vec)
 		}
 	}
 
