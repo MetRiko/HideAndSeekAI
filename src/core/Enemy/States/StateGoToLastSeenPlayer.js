@@ -50,7 +50,7 @@ export class StateGoToLastSeenPlayer {
 
 			const moveDir = p5.createVector(1.0, 0.0).rotate(this.enemy.getRotation() + Math.sign(deltaAngle) * 0.01)
 
-			this.enemy.move(moveDir.mult(2.0))
+			this.enemy.move(moveDir.mult(1.2))
 
 			if (Math.abs(deltaAngle) < 0.02) {
 				this.isMovingForward = true

@@ -1,3 +1,4 @@
+import * as Tween from "@tweenjs/tween.js"
 import { p5 } from "../../P5Core"
 
 export class StateGoToBush {
@@ -7,7 +8,6 @@ export class StateGoToBush {
 	constructor(machine, enemy) {
 		this.machine = machine
 		this.enemy = enemy
-		this.targetPos = null
 
 		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
 	}
@@ -19,10 +19,28 @@ export class StateGoToBush {
 	}
 
 	init() {
-		const bush = this.enemy.getNearestBush()
-        this.targetPos = p5.createVector(bush.position.x, bush.position.y)
-		this.enemy.moveToPosition(this.targetPos)
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+
+		const bush = this.enemy.getNearestBush()
+		const targetPos = p5.createVector(bush.position.x, bush.position.y)
+
+		const forwardVec = this.enemy.getForwardVector()
+		const targetVec = targetPos.copy().sub(this.enemy.getPosition())
+
+		const deltaAngle = forwardVec.angleBetween(targetVec)
+
+		const startAngle = this.enemy.getRotation()
+		const endAngle = startAngle + deltaAngle
+
+		new Tween.Tween({value: startAngle})
+			.to({value: endAngle}, 1000.0)
+			.easing(Tween.Easing.Sinusoidal.InOut)
+			.onUpdate(({value}) => this.enemy.setRotation(value))
+			.onComplete(({value}) => {
+				this.enemy.setRotation(value)
+				this.enemy.moveToPosition(targetPos)
+			})
+			.start()
 	}
 
 	update() {
@@ -31,21 +49,5 @@ export class StateGoToBush {
 
 	finish() {
 		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
-	}
-	
-	render(p5) {
-		const vec = this.enemy.pos.copy().sub(this.targetPos).normalize().mult(15.0)
-		const lineEndPos = this.targetPos.copy().add(vec)
-
-		p5.stroke(80, 20, 20)
-		p5.strokeWeight(2.0)
-		p5.line(this.enemy.pos.x, this.enemy.pos.y, lineEndPos.x, lineEndPos.y)
-		p5.noFill()
-		p5.stroke(80, 20, 20)
-		p5.strokeWeight(2.0)
-		p5.circle(this.targetPos.x, this.targetPos.y, 30.0)
-		p5.noStroke()
-		p5.fill(80, 20, 20)
-		p5.circle(this.targetPos.x, this.targetPos.y, 4.0)
 	}
 }
