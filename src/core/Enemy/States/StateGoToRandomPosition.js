@@ -11,6 +11,7 @@ export class StateGoToRandomPosition {
 		// this.targetPos = null
 
 		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
 	}
 
 	onMovementToTargetFinished() {
@@ -22,6 +23,10 @@ export class StateGoToRandomPosition {
 	// 	this.enemy.moveToPosition(this.targetPos)
 	// 	this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 	// }
+	
+	onNoticePlayer() {
+		this.machine.changeState("playerNoticed")
+	}
 
 	init() {
 		const randomPos = p5.createVector(p5.random(p5.width), p5.random(p5.height))
@@ -41,7 +46,7 @@ export class StateGoToRandomPosition {
 			.start()
 
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
-
+		this.enemy.getSignalController().connect("player_enetered_orange_view", this.onNoticePlayerCallback)
 	}
 
 	update() {
@@ -50,5 +55,6 @@ export class StateGoToRandomPosition {
 
 	finish() {
 		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+		this.enemy.getSignalController().disconnect("player_enetered_orange_view", this.onNoticePlayerCallback)
 	}
 }

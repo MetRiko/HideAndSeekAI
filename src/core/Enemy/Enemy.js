@@ -7,20 +7,34 @@ import Utils from "../../utils/Utils"
 import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
-import { StateLookForPlayer } from "./States/StateLookForPlayer"
+import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
+import { StateGoToBush } from "./States/StateGoToBush"
+import { StateCheckBush } from "./States/StateCheckBush"
+import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
+import { StateLookAround360 } from "./States/StateLookAround360"
+import { StateCatched } from "./States/StateCatched"
 
 const behaviours = {
 	"idle": StateIdle,
 	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
-	"lookForPlayer": StateLookForPlayer
+	"playerNoticed": StatePlayerNoticed,
+	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
+	"lookAround360": StateLookAround360,
+	"goToBush": StateGoToBush,
+	"checkBush": StateCheckBush,
+	"catched": StateCatched
 }
+
+const speed = 2.0
 
 export default class Enemy {
 
-	constructor(x, y) {
+	constructor(x, y, area) {
 		this.pos = p5.createVector(x, y)
 		this.rotation = 0.0
+
+		this.area = area
 		// this.catchRange = 0
 		// this.playerCaught = false
 		// this.lastSeenPlayerPosition = null
@@ -37,6 +51,8 @@ export default class Enemy {
 
 		this.playerIsInsideGrayView = false
 		this.playerIsInsideOrangeView = false
+
+		this.playerLastPosition = null
 
 		this.signalController = new SignalController()
 
@@ -90,10 +106,15 @@ export default class Enemy {
 	getForwardVector() {
 		return p5.createVector(1.0, 0.0).rotate(this.rotation)
 	}
+	
+	moveToPlayerLastPosition() {
+		this.moveToPosition(this.playerLastPosition.copy())
+		this.playerLastPosition = null
+	}
 
 	updateMovement() {
 		if (this.targetPos) {
-			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(this.moveSpeed)
+			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(speed)
 			this.move(vec)
 			const nextVec = this.targetPos.copy().sub(this.pos)
 			const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
@@ -105,6 +126,21 @@ export default class Enemy {
 				this.signalController.emitSignal("movement_to_target_finished")
 			}
 		}
+	}
+
+	getNearestBush() {
+		let best_distance = Infinity
+		let candidate_bush = null
+		for (const bush of this.area.bushes) {
+			let x1 = bush.position.x
+			let y1 = bush.position.y
+			let distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
+			if(distance < best_distance) {
+				best_distance = distance
+				candidate_bush = bush
+			}
+        }
+		return candidate_bush
 	}
 
 	_checkIfPlayerIsInsideGrayView(player) {
@@ -158,6 +194,8 @@ export default class Enemy {
 			if (prev < 1.0 && this.catchProgress >= 1.0) {
 				this.signalController.emitSignal("player_catched")
 			}
+
+			this.playerLastPosition = player.position
 		}
 		else {
 			this.catchProgress = Utils.clamp(0.0, 1.0, catchProgress - 0.03)
