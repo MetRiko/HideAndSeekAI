@@ -4,7 +4,7 @@ export class StateLookAround360 {
 		this.enemy = enemy;
 	}
 	init() {
-		console.log("LOOK AROUND");
+		console.log("LOOK AROUND 360");
 		this.machine.changeState("idle");
 	}
 	update() {

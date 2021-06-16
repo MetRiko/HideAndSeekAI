@@ -9,14 +9,18 @@ import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
 import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
+import { StateLookAround360 } from "./States/StateLookAround360"
 
 const behaviours = {
 	"idle": StateIdle,
 	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
 	"playerNoticed": StatePlayerNoticed,
-	"goToLastSeenPlayer": StateGoToLastSeenPlayer
+	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
+	"lookAround360": StateLookAround360
 }
+
+const speed = 2.0
 
 export default class Enemy {
 
@@ -37,6 +41,8 @@ export default class Enemy {
 
 		this.playerIsInsideGrayView = false
 		this.playerIsInsideOrangeView = false
+
+		this.playerLastPosition = null
 
 		this.signalController = new SignalController()
 
@@ -75,9 +81,14 @@ export default class Enemy {
 		this.targetPos = targetPos
 	}
 
+	moveToPlayerLastPosition() {
+		this.moveToPosition(this.playerLastPosition.copy())
+		this.playerLastPosition = null
+	}
+
 	updateMovement() {
 		if (this.targetPos) {
-			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(this.moveSpeed)
+			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(speed)
 			this.move(vec)
 			const nextVec = this.targetPos.copy().sub(this.pos)
 			const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
@@ -142,6 +153,8 @@ export default class Enemy {
 			if (prev < 1.0 && this.catchProgress >= 1.0) {
 				this.signalController.emitSignal("player_catched")
 			}
+
+			this.playerLastPosition = player.position
 		}
 		else {
 			this.catchProgress = Utils.clamp(0.0, 1.0, catchProgress - 0.03)

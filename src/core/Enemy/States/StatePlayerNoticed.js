@@ -11,7 +11,9 @@ export class StatePlayerNoticed {
 	}
 
 	onLostUser() {
-		this.machine.changeState("moveToLastSeenPlayer")
+		setTimeout(() => {
+			this.machine.changeState("goToLastSeenPlayer")
+		}, 1000.0);
 	}
 
 	init() {
