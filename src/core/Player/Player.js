@@ -7,6 +7,11 @@ const keyS = 83
 const keyA = 65
 const keyD = 68
 
+const keyUp = 38
+const keyDown = 40
+const keyLeft = 37
+const keyRight = 39
+
 export class Player {
 
 	constructor(x, y) {
@@ -45,16 +50,16 @@ export class Player {
 
 	updateMovement() {
 		let vec = p5.createVector(0.0, 0.0)
-		if (p5.keyIsDown(keyW)) {
+		if (p5.keyIsDown(keyW) || p5.keyIsDown(keyUp)) {
 			vec.y = -1.0
 		}
-		else if (p5.keyIsDown(keyS)) {
+		else if (p5.keyIsDown(keyS) || p5.keyIsDown(keyDown)) {
 			vec.y = 1.0
 		}
-		if (p5.keyIsDown(keyA)) {
+		if (p5.keyIsDown(keyA) || p5.keyIsDown(keyLeft)) {
 			vec.x = -1.0
 		}
-		else if (p5.keyIsDown(keyD)) {
+		else if (p5.keyIsDown(keyD) || p5.keyIsDown(keyRight)) {
 			vec.x = 1.0
 		}
 		if (vec.x !== 0 || vec.y !== 0) {
