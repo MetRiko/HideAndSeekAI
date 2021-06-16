@@ -15,11 +15,12 @@ export class StateGoToBush {
 	onMovementToTargetFinished() {
 		console.log(this.machine)
 		console.log("Movement finished")
-		this.machine.changeState("lookAround")
+		this.machine.changeState("checkBush")
 	}
 
 	init() {
-		this.targetPos = this.enemy.getCoordNearestBush()
+		const bush = this.enemy.getNearestBush()
+        this.targetPos = p5.createVector(bush.position.x, bush.position.y)
 		this.enemy.moveToPosition(this.targetPos)
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 	}
