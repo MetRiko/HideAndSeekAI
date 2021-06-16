@@ -7,10 +7,15 @@ export class StateLookAround360 {
 		this.enemy = enemy;
 
 		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
-	
-	onNoticePlayer() {
+
+    onNoticePlayer() {
+		console.log("X")
 		this.machine.changeState("playerNoticed")
+	}
+    onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	init() {

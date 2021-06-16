@@ -9,11 +9,16 @@ export class StateCheckBush {
 		this.enemy = enemy
 		this.targetPos = null
 
-		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
 
-	onMovementToTargetFinished() {
-		console.log(this.machine)
+    onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+    onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	init() {

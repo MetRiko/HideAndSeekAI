@@ -3,6 +3,9 @@ export class StateIdle {
 		this.interval = null;
 		this.machine = machine;
 		this.enemy = enemy;
+
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
 	init() {
 		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
@@ -11,6 +14,15 @@ export class StateIdle {
 		setTimeout(() => {
 			this.machine.changeState("goToRandomPosition")
 		}, 2000.0);
+	}
+
+	onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+
+	onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	update() {

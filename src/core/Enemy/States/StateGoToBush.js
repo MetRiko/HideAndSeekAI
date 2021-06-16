@@ -10,6 +10,16 @@ export class StateGoToBush {
 		this.enemy = enemy
 
 		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
+        this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
+	}
+
+    onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+    onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	onMovementToTargetFinished() {
