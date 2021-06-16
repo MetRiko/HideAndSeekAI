@@ -9,11 +9,15 @@ import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateLookForPlayer } from "./States/StateLookForPlayer"
 
+import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
+import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
+
 const behaviours = {
 	"idle": StateIdle,
 	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
-	"lookForPlayer": StateLookForPlayer
+	"playerNoticed": StatePlayerNoticed,
+	"moveToLastSeenPlayer": StateGoToLastSeenPlayer
 }
 
 export default class Enemy {

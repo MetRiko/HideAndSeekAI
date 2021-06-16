@@ -1,4 +1,4 @@
-export class StateLookForPlayer {
+export class StateGoToLastSeenPlayer {
 	constructor(machine, enemy) {
 		this.machine = machine;
 		this.enemy = enemy;
