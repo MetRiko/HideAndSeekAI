@@ -2,14 +2,24 @@ export class StateLookAround360 {
 	constructor(machine, enemy) {
 		this.machine = machine;
 		this.enemy = enemy;
+
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
 	}
+	
+	onNoticePlayer() {
+		this.machine.changeState("playerNoticed")
+	}
+
 	init() {
-		console.log("LOOK AROUND 360");
-		this.machine.changeState("idle");
+		this.enemy.getSignalController().connect("player_enetered_orange_view", this.onNoticePlayerCallback)
+
+		// this.machine.changeState("goToTheNearestBush");
 	}
+	
 	update() {
-		// TODO: If orange area -> noticed
 	}
+
 	finish() {
+		this.enemy.getSignalController().disconnect("player_enetered_orange_view", this.onNoticePlayerCallback)
 	}
 }
