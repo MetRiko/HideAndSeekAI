@@ -12,8 +12,7 @@ export class StateLookAround360 {
 
 	init() {
 		this.enemy.getSignalController().connect("player_enetered_orange_view", this.onNoticePlayerCallback)
-
-		// this.machine.changeState("goToBush");
+		this.machine.changeState("goToBush");
 	}
 	
 	update() {
