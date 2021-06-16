@@ -11,7 +11,7 @@ export class StateLookAround360 {
 	}
 
 	init() {
-		this.enemy.getSignalController().connect("player_enetered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
 		this.machine.changeState("goToBush");
 	}
 	
@@ -19,6 +19,6 @@ export class StateLookAround360 {
 	}
 
 	finish() {
-		this.enemy.getSignalController().disconnect("player_enetered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
 	}
 }

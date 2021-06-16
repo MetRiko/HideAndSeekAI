@@ -12,9 +12,10 @@ export class StatePlayerNoticed {
 	}
 
 	onLostUser() {
-		setTimeout(() => {
+		// setTimeout(() => {
+			console.log("TEST")
 			this.machine.changeState("goToLastSeenPlayer")
-		}, 1000.0);
+		// }, 1000.0);
 	}
 
 	onCatchUser() {
@@ -22,13 +23,14 @@ export class StatePlayerNoticed {
 	}
 
 	init() {
-		this.enemy.getSignalController().connect("player_exited_orange_view", this.onLostUserCallback)
-		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+		this.machine.changeState("goToLastSeenPlayer")
+		// this.enemy.getSignalController().connect("player_entered_orange_view", this.onLostUserCallback)
+		// this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
 	}
 
 	finish() {
-		this.enemy.getSignalController().disconnect("player_exited_orange_view", this.onLostUserCallback)
-		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
+		// this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onLostUserCallback)
+		// this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 
 	update() {
