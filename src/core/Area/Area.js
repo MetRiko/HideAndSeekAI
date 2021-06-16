@@ -60,7 +60,7 @@ export class Area {
     }
 
     new_enemy() {
-        this.enemies.push(new Enemy(200, 100))
+        this.enemies.push(new Enemy(200, 100, this))
     }
 
 	update() {

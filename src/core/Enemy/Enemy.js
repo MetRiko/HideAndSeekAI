@@ -8,6 +8,7 @@ import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
+import { StateGoToBush} from "./States/StateGoToBush"
 import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
 import { StateLookAround360 } from "./States/StateLookAround360"
 
@@ -17,16 +18,22 @@ const behaviours = {
 	"lookAround": StateLookAround,
 	"playerNoticed": StatePlayerNoticed,
 	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
+<<<<<<< HEAD
 	"lookAround360": StateLookAround360
+=======
+	"goToTheNearestBush": StateGoToBush
+>>>>>>> f4d01fc7cd92fb1d0c1f96c2ee8120a240e50f8b
 }
 
 const speed = 2.0
 
 export default class Enemy {
 
-	constructor(x, y) {
+	constructor(x, y, area) {
 		this.pos = p5.createVector(x, y)
 		this.rotation = 0.0
+
+		this.area = area
 		// this.catchRange = 0
 		// this.playerCaught = false
 		// this.lastSeenPlayerPosition = null
@@ -100,6 +107,23 @@ export default class Enemy {
 				this.signalController.emitSignal("movement_to_target_finished")
 			}
 		}
+	}
+
+	getCoordNearestBush() {
+		let best_distance = Infinity
+		let candidate_x = null
+		let candidate_y = null
+		for (const bush of this.area.bushes) {
+			let x1 = bush.position.x
+			let y1 = bush.position.y
+			let distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
+			if(distance < best_distance) {
+				best_distance = distance
+				candidate_x = x1
+				candidate_y = y1
+			}
+        }
+		return p5.createVector(candidate_x, candidate_y)
 	}
 
 	_checkIfPlayerIsInsideGrayView(player) {
