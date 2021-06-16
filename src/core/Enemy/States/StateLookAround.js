@@ -6,6 +6,9 @@ export class StateLookAround {
 		this.enemy = enemy;
 	}
 	init() {
+		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+
 		console.log("LOOK AROUND");
 		// this.machine.changeState("idle");
 		
@@ -40,5 +43,7 @@ export class StateLookAround {
 		// TODO: If orange area -> noticed
 	}
 	finish() {
+		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

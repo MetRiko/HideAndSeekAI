@@ -5,9 +5,11 @@ export class StateIdle {
 		this.enemy = enemy;
 	}
 	init() {
+		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+
 		setTimeout(() => {
 			this.machine.changeState("goToRandomPosition")
-			// this.machine.changeState("goToBush")
 		}, 2000.0);
 	}
 
@@ -17,5 +19,7 @@ export class StateIdle {
 
 	finish() {
 		clearInterval(this.interval);
+		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

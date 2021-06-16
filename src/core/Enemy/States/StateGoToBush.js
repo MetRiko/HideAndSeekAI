@@ -20,6 +20,8 @@ export class StateGoToBush {
 
 	init() {
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+        this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+        this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
 
 		const bush = this.enemy.getNearestBush()
 		const targetPos = p5.createVector(bush.position.x, bush.position.y)
@@ -48,6 +50,8 @@ export class StateGoToBush {
 	}
 
 	finish() {
-		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+        this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+        this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

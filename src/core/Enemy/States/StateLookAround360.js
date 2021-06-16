@@ -15,6 +15,7 @@ export class StateLookAround360 {
 
 	init() {
 		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
 		
 		const startAngle = this.enemy.getRotation()
 		const endAngle = startAngle + Math.PI * 2.0
@@ -35,5 +36,6 @@ export class StateLookAround360 {
 
 	finish() {
 		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

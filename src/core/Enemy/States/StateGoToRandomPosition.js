@@ -32,6 +32,7 @@ export class StateGoToRandomPosition {
 	init() {
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
 
 		const randomPos = p5.createVector(p5.random(p5.width), p5.random(p5.height))
 		const moveVec = randomPos.copy().sub(this.enemy.getPosition())
@@ -57,5 +58,6 @@ export class StateGoToRandomPosition {
 	finish() {
 		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }
