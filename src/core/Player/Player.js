@@ -1,3 +1,4 @@
+import Utils from "../../utils/Utils"
 import { p5 } from "../P5Core"
 
 const speed = 5.0
@@ -41,6 +42,11 @@ export class Player {
 
 	move(vec) {
 		this.position.add(vec)
+
+		const radius = this.radius
+		this.position.x = Utils.clamp(0.0 + radius, 1280.0 - radius, this.position.x)
+		this.position.y = Utils.clamp(0.0 + radius, 720.0 - radius, this.position.y)
+
 		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
 	}
 
