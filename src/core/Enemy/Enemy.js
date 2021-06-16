@@ -129,11 +129,11 @@ export default class Enemy {
 			pos.x, pos.y, maxGrayViewRange, rotation - viewAngle, rotation + viewAngle, 
 			player.position.x, player.position.y
 		)
-		if (this.playerIsInsideGrayView === false && isPlayerInsideGrayView) {
+		if (this.playerIsInsideGrayView === false && isPlayerInsideGrayView && !player.hidden) {
 			this.playerIsInsideGrayView = true
 			this.signalController.emitSignal("player_enetered_gray_view")
 		}
-		else if (this.playerIsInsideGrayView === true && !isPlayerInsideGrayView) {
+		else if (this.playerIsInsideGrayView === true && (!isPlayerInsideGrayView || player.hidden)) {
 			this.playerIsInsideGrayView = false
 			this.signalController.emitSignal("player_exited_gray_view")
 		}
@@ -145,11 +145,11 @@ export default class Enemy {
 			pos.x, pos.y, currentOrangeViewRange, rotation - viewAngle, rotation + viewAngle, 
 			player.position.x, player.position.y
 		)
-		if (this.playerIsInsideOrangeView === false && isPlayerInsideOrangeView) {
+		if (this.playerIsInsideOrangeView === false && isPlayerInsideOrangeView && !player.hidden) {
 			this.playerIsInsideOrangeView = true
 			this.signalController.emitSignal("player_enetered_orange_view")
 		}
-		else if (this.playerIsInsideOrangeView === true && !isPlayerInsideOrangeView) {
+		else if (this.playerIsInsideOrangeView === true && (!isPlayerInsideOrangeView || player.hidden)) {
 			this.playerIsInsideOrangeView = false
 			this.signalController.emitSignal("player_exited_orange_view")
 		}
