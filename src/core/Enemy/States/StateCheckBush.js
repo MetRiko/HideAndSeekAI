@@ -9,14 +9,22 @@ export class StateCheckBush {
 		this.enemy = enemy
 		this.targetPos = null
 
-		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
 
-	onMovementToTargetFinished() {
-		console.log(this.machine)
+    onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+    onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	init() {
+        this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+
 		const bush = this.enemy.getNearestBush()
         if(bush.player_inside == true) {
             this.machine.changeState("catched")
@@ -30,5 +38,7 @@ export class StateCheckBush {
 	}
 
 	finish() {
+        this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

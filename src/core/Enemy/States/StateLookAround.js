@@ -4,8 +4,24 @@ export class StateLookAround {
 	constructor(machine, enemy) {
 		this.machine = machine;
 		this.enemy = enemy;
+
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
+
+	onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+
+	onCatchUser() {
+		this.machine.changeState("catched")
+	}
+
 	init() {
+		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+
 		console.log("LOOK AROUND");
 		// this.machine.changeState("idle");
 		
@@ -40,5 +56,7 @@ export class StateLookAround {
 		// TODO: If orange area -> noticed
 	}
 	finish() {
+		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }

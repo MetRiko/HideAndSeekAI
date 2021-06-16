@@ -3,12 +3,26 @@ export class StateIdle {
 		this.interval = null;
 		this.machine = machine;
 		this.enemy = enemy;
+
+		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
 	init() {
+		this.enemy.getSignalController().connect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
+
 		setTimeout(() => {
 			this.machine.changeState("goToRandomPosition")
-			// this.machine.changeState("goToBush")
 		}, 2000.0);
+	}
+
+	onNoticePlayer() {
+		console.log("X")
+		this.machine.changeState("playerNoticed")
+	}
+
+	onCatchUser() {
+		this.machine.changeState("catched")
 	}
 
 	update() {
@@ -17,5 +31,7 @@ export class StateIdle {
 
 	finish() {
 		clearInterval(this.interval);
+		this.enemy.getSignalController().disconnect("player_entered_orange_view", this.onNoticePlayerCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 }
