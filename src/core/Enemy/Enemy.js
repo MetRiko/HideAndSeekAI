@@ -8,6 +8,7 @@ import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateGoToLastSeenPlayer } from "./States/StateGoToLastSeenPlayer"
+import { StateGoToBush} from "./States/StateGoToBush"
 import { StatePlayerNoticed } from "./States/StatePlayerNoticed"
 
 const behaviours = {
@@ -15,7 +16,8 @@ const behaviours = {
 	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
 	"playerNoticed": StatePlayerNoticed,
-	"goToLastSeenPlayer": StateGoToLastSeenPlayer
+	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
+	"goToTheNearestBush": StateGoToBush
 }
 
 export default class Enemy {
@@ -94,13 +96,13 @@ export default class Enemy {
 	}
 
 	getCoordNearestBush() {
-		best_distance = Infinity
-		candidate_x = null
-		candidate_y = null
+		let best_distance = Infinity
+		let candidate_x = null
+		let candidate_y = null
 		for (const bush of this.area.bushes) {
-			x1 = bush.position.x
-			y1 = bush.position.y
-			distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
+			let x1 = bush.position.x
+			let y1 = bush.position.y
+			let distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
 			if(distance < best_distance) {
 				best_distance = distance
 				candidate_x = x1
