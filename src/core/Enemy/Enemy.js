@@ -17,7 +17,7 @@ const behaviours = {
 	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
 	"playerNoticed": StatePlayerNoticed,
-	"moveToLastSeenPlayer": StateGoToLastSeenPlayer
+	"goToLastSeenPlayer": StateGoToLastSeenPlayer
 }
 
 export default class Enemy {
