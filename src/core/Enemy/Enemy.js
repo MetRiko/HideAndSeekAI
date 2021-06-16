@@ -1,6 +1,9 @@
 import { p5 } from "../P5Core"
 import StateMachine from "./StateMachine"
+import SignalController from "./SignalController"
+
 import Utils from "../../utils/Utils"
+
 import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
 import { StateMoveToRandomPosition } from "./States/StateMoveToRandomPosition"
@@ -17,19 +20,33 @@ export default class Enemy {
 
 	constructor(x, y) {
 		this.pos = p5.createVector(x, y)
-		const machine = new StateMachine()
 		this.rotation = 0.0
-		this.viewRange = 320
-		this.viewReactionRange = 150
-		this.viewCurrentRange = this.viewReactionRange
-		this.catchRange = 0
-		this.viewAngle = 0.3
-		this.playerCaught = false
-		this.lastSeenPlayerPosition = null
+		// this.catchRange = 0
+		// this.playerCaught = false
+		// this.lastSeenPlayerPosition = null
 
-		this.stateMachine = machine
+		this.targetPos = null
+
+		this.viewAngle = 0.3
+		this.maxGrayViewRange = 320
+		this.minOrangeViewRange = 150
+		this.currentOrangeViewRange = this.minOrangeViewRange
+		this.catchProgress = 0.0 // 0.0 - 1.0 (1.0 = game over)
+
+		this.playerIsInsideGrayView = false
+		this.playerIsInsideOrangeView = false
+
+		this.signalController = new SignalController()
+
+		const machine = new StateMachine()
 		machine.replaceStates(behaviours, this)
 		machine.changeState("idle")
+		this.stateMachine = machine
+
+	}
+
+	getSignalController() {
+		return this.signalController
 	}
 
 	move(vec) {
@@ -39,61 +56,142 @@ export default class Enemy {
 
 	update(player) {
 		this.stateMachine.update()
+		this.updateMovement()
 		this.updateView(player)
+		this.signalController.update()
+	}
+
+	stopMoving() {
+		this.targetPos = null
+	}
+
+	isMoving() {
+		return this.targetPos !== null 
+	}
+
+	moveToPosition(targetPos) {
+		this.targetPos = targetPos
+	}
+
+	updateMovement() {
+		if (this.targetPos) {
+			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(this.moveSpeed)
+			this.move(vec)
+			const nextVec = this.targetPos.copy().sub(this.pos)
+			const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
+			const difY = Math.sign(vec.y) !== Math.sign(nextVec.y)
+
+			if (difX || difY) {
+				this.pos = this.targetPos
+				this.targetPos = null
+				this.signalController.emitSignal("movement_to_target_finished")
+			}
+		}
+	}
+
+	_checkIfPlayerIsInsideGrayView(player) {
+		const {pos, maxGrayViewRange, rotation, viewAngle} = this
+		const isPlayerInsideGrayView = Utils.arcContainsPoint(
+			pos.x, pos.y, maxGrayViewRange, rotation - viewAngle, rotation + viewAngle, 
+			player.position.x, player.position.y
+		)
+		if (this.playerIsInsideGrayView === false && isPlayerInsideGrayView) {
+			this.playerIsInsideGrayView = true
+			this.signalController.emitSignal("player_enetered_gray_view")
+		}
+		else if (this.playerIsInsideGrayView === true && !isPlayerInsideGrayView) {
+			this.playerIsInsideGrayView = false
+			this.signalController.emitSignal("player_exited_gray_view")
+		}
+	}
+
+	_checkIfPlayerIsInsideOrangeView(player) {
+		const {pos, currentOrangeViewRange, rotation, viewAngle} = this
+		const isPlayerInsideOrangeView = Utils.arcContainsPoint(
+			pos.x, pos.y, currentOrangeViewRange, rotation - viewAngle, rotation + viewAngle, 
+			player.position.x, player.position.y
+		)
+		if (this.playerIsInsideOrangeView === false && isPlayerInsideOrangeView) {
+			this.playerIsInsideOrangeView = true
+			this.signalController.emitSignal("player_enetered_orange_view")
+		}
+		else if (this.playerIsInsideOrangeView === true && !isPlayerInsideOrangeView) {
+			this.playerIsInsideOrangeView = false
+			this.signalController.emitSignal("player_exited_orange_view")
+		}
 	}
 
 	updateView(player) {
-		const {pos, viewRange, viewCurrentRange, catchRange, rotation, viewAngle} = this
-		const contains = Utils.arcContainsPoint(pos.x, pos.y, viewRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
-		const seePlayer = Utils.arcContainsPoint(pos.x, pos.y, viewCurrentRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
-		const caughtPlayer = Utils.arcContainsPoint(pos.x, pos.y, catchRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
-		if (caughtPlayer) {
-			this.playerCaught = true
+		this._checkIfPlayerIsInsideGrayView(player)
+		this._checkIfPlayerIsInsideOrangeView(player)
+		
+		const { maxGrayViewRange, minOrangeViewRange, currentOrangeViewRange, catchProgress } = this
+
+		if (this.playerIsInsideGrayView === true) {
+			this.currentOrangeViewRange = Utils.clamp(minOrangeViewRange, maxGrayViewRange, currentOrangeViewRange + 3.0)
 		}
-		if (seePlayer) {
-			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange + 3.0)
-			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
-			this.lastSeenPlayerPosition = player.position.copy()
+		else {
+			this.currentOrangeViewRange = Utils.clamp(minOrangeViewRange, maxGrayViewRange, currentOrangeViewRange - 1.5)
 		}
-		else if (contains) {
-			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
-			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
-			if (this.lastSeenPlayerPosition != null) {
-				this.stateMachine.changeState("lookForPlayer")
+		
+		if (this.playerIsInsideOrangeView === true) {
+			const prev = this.catchProgress
+			this.catchProgress = Utils.clamp(0.0, 1.0, catchProgress + 0.03)
+			if (prev < 1.0 && this.catchProgress >= 1.0) {
+				this.signalController.emitSignal("player_catched")
 			}
 		}
 		else {
-			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
-			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
-			if (this.lastSeenPlayerPosition != null) {
-				this.stateMachine.changeState("lookForPlayer")
-			}
+			this.catchProgress = Utils.clamp(0.0, 1.0, catchProgress - 0.03)
 		}
+
+		// const {viewCurrentRange, catchRange} = this
+
+		// const contains = Utils.arcContainsPoint(pos.x, pos.y, viewRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		// const seePlayer = Utils.arcContainsPoint(pos.x, pos.y, viewCurrentRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		// const caughtPlayer = Utils.arcContainsPoint(pos.x, pos.y, catchRange, rotation - viewAngle, rotation + viewAngle, player.position.x, player.position.y) && !player.hidden
+		// if (caughtPlayer) {
+		// 	this.playerCaught = true
+		// }
+		// if (seePlayer) {
+		// 	this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange + 3.0)
+		// 	this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+		// 	this.lastSeenPlayerPosition = player.position.copy()
+		// }
+		// else if (contains) {
+		// 	this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
+		// 	this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
+		// 	if (this.lastSeenPlayerPosition != null) {
+		// 		this.stateMachine.changeState("lookForPlayer")
+		// 	}
+		// }
+		// else {
+		// 	this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
+		// 	this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
+		// 	if (this.lastSeenPlayerPosition != null) {
+		// 		this.stateMachine.changeState("lookForPlayer")
+		// 	}
+		// }
 	}
 
 	renderView(p5) {
 
-		const {pos, rotation, viewRange, viewAngle, viewCurrentRange, catchRange} = this
+		const {pos, rotation, viewAngle, maxGrayViewRange, currentOrangeViewRange, catchProgress} = this
 
-		// p5.push()
-		// p5.translate(x, y)
 		p5.push()
 		p5.translate(pos.x, pos.y)
+		
+		// Orange gray view
 		p5.fill(255, 255, 255, 10)
 		p5.noStroke()
-		p5.arc(0, 0, viewRange * 2.0, viewRange * 2.0, rotation - viewAngle, rotation + viewAngle)
-		p5.fill(255, 100, 10, 30)
-		p5.noStroke()
-		p5.arc(0, 0, viewCurrentRange * 2.0, viewCurrentRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+		p5.arc(0, 0, maxGrayViewRange * 2.0, maxGrayViewRange * 2.0, rotation - viewAngle, rotation + viewAngle)
 		
-		p5.fill(255, 0, 0, 20)
+		// Orange range view
+		p5.fill(255, 100 - 100 * catchProgress, 10, 30 + 50 * catchProgress)
 		p5.noStroke()
-		p5.arc(0, 0, catchRange * 2.0, catchRange * 2.0, rotation - viewAngle, rotation + viewAngle)
+		p5.arc(0, 0, currentOrangeViewRange * 2.0, currentOrangeViewRange * 2.0, rotation - viewAngle, rotation + viewAngle)
 
 		p5.pop()
-		// p5.pop()
-		// p5.rotate(this.rotation)
-
 	}
 
 	render(p5) {
