@@ -1,3 +1,4 @@
+import Utils from "../../utils/Utils"
 import { p5 } from "../P5Core"
 
 const speed = 5.0
@@ -6,6 +7,11 @@ const keyW = 87
 const keyS = 83
 const keyA = 65
 const keyD = 68
+
+const keyUp = 38
+const keyDown = 40
+const keyLeft = 37
+const keyRight = 39
 
 export class Player {
 
@@ -36,6 +42,11 @@ export class Player {
 
 	move(vec) {
 		this.position.add(vec)
+
+		const radius = this.radius
+		this.position.x = Utils.clamp(0.0 + radius, 1280.0 - radius, this.position.x)
+		this.position.y = Utils.clamp(0.0 + radius, 720.0 - radius, this.position.y)
+
 		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
 	}
 
@@ -45,16 +56,16 @@ export class Player {
 
 	updateMovement() {
 		let vec = p5.createVector(0.0, 0.0)
-		if (p5.keyIsDown(keyW)) {
+		if (p5.keyIsDown(keyW) || p5.keyIsDown(keyUp)) {
 			vec.y = -1.0
 		}
-		else if (p5.keyIsDown(keyS)) {
+		else if (p5.keyIsDown(keyS) || p5.keyIsDown(keyDown)) {
 			vec.y = 1.0
 		}
-		if (p5.keyIsDown(keyA)) {
+		if (p5.keyIsDown(keyA) || p5.keyIsDown(keyLeft)) {
 			vec.x = -1.0
 		}
-		else if (p5.keyIsDown(keyD)) {
+		else if (p5.keyIsDown(keyD) || p5.keyIsDown(keyRight)) {
 			vec.x = 1.0
 		}
 		if (vec.x !== 0 || vec.y !== 0) {
