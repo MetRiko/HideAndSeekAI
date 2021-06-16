@@ -20,9 +20,11 @@ const behaviours = {
 
 export default class Enemy {
 
-	constructor(x, y) {
+	constructor(x, y, area) {
 		this.pos = p5.createVector(x, y)
 		this.rotation = 0.0
+
+		this.area = area
 		// this.catchRange = 0
 		// this.playerCaught = false
 		// this.lastSeenPlayerPosition = null
@@ -89,6 +91,23 @@ export default class Enemy {
 				this.signalController.emitSignal("movement_to_target_finished")
 			}
 		}
+	}
+
+	getCoordNearestBush() {
+		best_distance = Infinity
+		candidate_x = null
+		candidate_y = null
+		for (const bush of this.area.bushes) {
+			x1 = bush.position.x
+			y1 = bush.position.y
+			distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
+			if(distance < best_distance) {
+				best_distance = distance
+				candidate_x = x1
+				candidate_y = y1
+			}
+        }
+		return p5.createVector(candidate_x, candidate_y)
 	}
 
 	_checkIfPlayerIsInsideGrayView(player) {
