@@ -1,6 +1,6 @@
 import { p5 } from "../../P5Core"
 
-export class StateMoveToRandomPosition {
+export class StateGoToRandomPosition {
 
 	moveSpeed = 2.0
 
@@ -24,21 +24,12 @@ export class StateMoveToRandomPosition {
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 	}
 
-	finish() {
-		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
+	update() {
+		// TODO: If orange area -> noticed
 	}
 
-	update() {
-		// const vec = this.targetPos.copy().sub(this.enemy.pos).normalize().mult(this.moveSpeed)
-		// this.enemy.move(vec)
-		// const nextVec = this.targetPos.copy().sub(this.enemy.pos)
-		// const difX = Math.sign(vec.x) !== Math.sign(nextVec.x)
-		// const difY = Math.sign(vec.y) !== Math.sign(nextVec.y)
-		// // console.log(vec, nextVec)
-		// if (difX || difY) {
-		// 	this.machine.changeState("lookAround")
-		// 	this.enemy.pos = this.targetPos
-		// }
+	finish() {
+		this.enemy.getSignalController().disconnect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 	}
 	
 	render(p5) {

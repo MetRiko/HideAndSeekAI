@@ -6,12 +6,12 @@ import Utils from "../../utils/Utils"
 
 import { StateLookAround } from "./States/StateLookAround"
 import { StateIdle } from "./States/StateIdle"
-import { StateMoveToRandomPosition } from "./States/StateMoveToRandomPosition"
+import { StateGoToRandomPosition } from "./States/StateGoToRandomPosition"
 import { StateLookForPlayer } from "./States/StateLookForPlayer"
 
 const behaviours = {
 	"idle": StateIdle,
-	"moveToRandomPosition": StateMoveToRandomPosition,
+	"goToRandomPosition": StateGoToRandomPosition,
 	"lookAround": StateLookAround,
 	"lookForPlayer": StateLookForPlayer
 }

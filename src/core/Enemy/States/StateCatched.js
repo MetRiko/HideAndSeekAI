@@ -5,16 +5,14 @@ export class StateIdle {
 		this.enemy = enemy;
 	}
 	init() {
-		setTimeout(() => {
-			this.machine.changeState("goToRandomPosition");
-		}, 2000.0);
+
 	}
 
 	update() {
-		// TODO: If orange area -> noticed
+        // TODO: Run to player and catched him
 	}
 
 	finish() {
-		clearInterval(this.interval);
+        // TODO: End game
 	}
 }
