@@ -18,11 +18,8 @@ const behaviours = {
 	"lookAround": StateLookAround,
 	"playerNoticed": StatePlayerNoticed,
 	"goToLastSeenPlayer": StateGoToLastSeenPlayer,
-<<<<<<< HEAD
-	"lookAround360": StateLookAround360
-=======
+	"lookAround360": StateLookAround360,
 	"goToTheNearestBush": StateGoToBush
->>>>>>> f4d01fc7cd92fb1d0c1f96c2ee8120a240e50f8b
 }
 
 const speed = 2.0
