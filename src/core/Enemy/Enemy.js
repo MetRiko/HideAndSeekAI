@@ -25,6 +25,8 @@ export default class Enemy {
 		// this.playerCaught = false
 		// this.lastSeenPlayerPosition = null
 
+		this.moveSpeed = 3.0
+
 		this.targetPos = null
 
 		this.viewAngle = 0.3
@@ -45,13 +47,25 @@ export default class Enemy {
 
 	}
 
+	getPosition() {
+		return this.pos
+	}
+
 	getSignalController() {
 		return this.signalController
+	}
+
+	getRotation() {
+		return this.rotation
 	}
 
 	move(vec) {
 		this.pos.add(vec)
 		this.rotation = p5.createVector(1.0, 0.0).angleBetween(vec)
+	}
+
+	setRotation(rotation) {
+		this.rotation = rotation
 	}
 
 	update(player) {
@@ -71,6 +85,10 @@ export default class Enemy {
 
 	moveToPosition(targetPos) {
 		this.targetPos = targetPos
+	}
+
+	getForwardVector() {
+		return p5.createVector(1.0, 0.0).rotate(this.rotation)
 	}
 
 	updateMovement() {
@@ -194,8 +212,27 @@ export default class Enemy {
 		p5.pop()
 	}
 
+	renderMovementIndicators(p5) {
+		if (this.targetPos) {
+			const vec = this.pos.copy().sub(this.targetPos).normalize().mult(15.0)
+			const lineEndPos = this.targetPos.copy().add(vec)
+	
+			p5.stroke(80, 20, 20)
+			p5.strokeWeight(2.0)
+			p5.line(this.pos.x, this.pos.y, lineEndPos.x, lineEndPos.y)
+			p5.noFill()
+			p5.stroke(80, 20, 20)
+			p5.strokeWeight(2.0)
+			p5.circle(this.targetPos.x, this.targetPos.y, 30.0)
+			p5.noStroke()
+			p5.fill(80, 20, 20)
+			p5.circle(this.targetPos.x, this.targetPos.y, 4.0)
+		}
+	}
+
 	render(p5) {
 		this.stateMachine.render(p5)
+		this.renderMovementIndicators(p5)
 		this.renderView(p5)
 
 		const {x, y} = this.pos
