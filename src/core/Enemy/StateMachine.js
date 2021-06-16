@@ -16,6 +16,7 @@ export default class StateMachine {
 	}
 
 	changeState(stateId) {
+		console.log(`change state ${stateId}`)
 		this.nextStateId = stateId
 	}
 

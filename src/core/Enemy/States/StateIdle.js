@@ -5,6 +5,7 @@ export class StateIdle {
 		this.enemy = enemy;
 	}
 	init() {
+		console.log("IDLE")
 		setTimeout(() => {
 			this.machine.changeState("moveToRandomPosition");
 		}, 2000.0);

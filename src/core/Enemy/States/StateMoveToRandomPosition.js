@@ -10,6 +10,7 @@ export class StateMoveToRandomPosition {
 		this.targetPos = null;
 	}
 	init() {
+		console.log("MOVE TO RANDOM")
 		this.targetPos = p5.createVector(p5.random(p5.width), p5.random(p5.height));
 	}
 	update() {

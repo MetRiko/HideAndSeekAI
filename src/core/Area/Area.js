@@ -34,7 +34,7 @@ export class Area {
 
         this.minutesTimer = new MinutesTimer()
         this.minutesTimer.start();
-        const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
+        // const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
 
         this.endGame = false
         this.endTime = null

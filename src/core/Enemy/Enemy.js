@@ -59,16 +59,29 @@ export default class Enemy {
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange + 2.0)
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
 			if (this.lastSeenPlayerPosition != null) {
+				console.log("aaaaa")
+				// console.log(this.lastSeenPlayerPosition)
 				this.stateMachine.changeState("lookForPlayer")
+				// this.clearLastSeenPlayerPosition()
 			}
 		}
 		else {
 			this.viewCurrentRange = Utils.clamp(this.viewReactionRange, this.viewRange, this.viewCurrentRange - 1.0)
 			this.catchRange = Utils.clamp(0, this.viewCurrentRange, this.catchRange - 1.5)
 			if (this.lastSeenPlayerPosition != null) {
+				console.log("bbbbbb")
+				console.log(this.lastSeenPlayerPosition)
+
 				this.stateMachine.changeState("lookForPlayer")
+				// this.clearLastSeenPlayerPosition()
+
 			}
 		}
+	}
+
+	clearLastSeenPlayerPosition() {
+		console.log("cleeeeaaaar")
+		this.lastSeenPlayerPosition = null
 	}
 
 	renderView(p5) {
