@@ -107,11 +107,6 @@ export default class Enemy {
 		return p5.createVector(1.0, 0.0).rotate(this.rotation)
 	}
 
-	moveToPlayerLastPosition() {
-		this.moveToPosition(this.playerLastPosition.copy())
-		this.playerLastPosition = null
-	}
-
 	updateMovement() {
 		if (this.targetPos) {
 			const vec = this.targetPos.copy().sub(this.pos).normalize().mult(speed)

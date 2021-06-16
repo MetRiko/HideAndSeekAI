@@ -8,6 +8,7 @@ export class StatePlayerNoticed {
 		this.targetPos = enemy.pos.copy()
 
 		this.onLostUserCallback = this.onLostUser.bind(this)
+		this.onCatchUserCallback = this.onCatchUser.bind(this)
 	}
 
 	onLostUser() {
@@ -16,12 +17,18 @@ export class StatePlayerNoticed {
 		}, 1000.0);
 	}
 
+	onCatchUser() {
+		this.machine.changeState("catched")
+	}
+
 	init() {
 		this.enemy.getSignalController().connect("player_exited_orange_view", this.onLostUserCallback)
+		this.enemy.getSignalController().connect("player_catched", this.onCatchUserCallback)
 	}
 
 	finish() {
 		this.enemy.getSignalController().disconnect("player_exited_orange_view", this.onLostUserCallback)
+		this.enemy.getSignalController().disconnect("player_catched", this.onCatchUserCallback)
 	}
 
 	update() {

@@ -1,8 +1,8 @@
 export class StateGoToLastSeenPlayer {
-	constructor(machine, enemy) {
+	constructor(machine, enemy, player) {
 		this.machine = machine
 		this.enemy = enemy
-		this.targetPos = null
+		this.player = player
 
 		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
 		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)
@@ -17,9 +17,7 @@ export class StateGoToLastSeenPlayer {
 	}
 
 	init() {
-		this.targetPos = this.enemy.playerLastPosition.copy()
-
-		this.enemy.moveToPlayerLastPosition()
+		this.enemy.moveToPosition(this.player.getPosition())
 		this.enemy.getSignalController().connect("movement_to_target_finished", this.onMovementToTargetFinishedCallback)
 		this.enemy.getSignalController().connect("player_enetered_orange_view", this.onNoticePlayerCallback)
 	}
