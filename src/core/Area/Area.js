@@ -40,6 +40,10 @@ export class Area {
         this.endTime = null
 	}
 
+    getPlayer() {
+        return this.player
+    }
+
     new_bush() {
         let x, y
         while(true) {

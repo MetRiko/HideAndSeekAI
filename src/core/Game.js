@@ -2,6 +2,7 @@ import { p5 } from "./P5Core"
 
 import { Area } from "./Area/Area"
 import { EndGame } from "./EndGame"
+import * as Tween from "@tweenjs/tween.js"
 
 let area = null
 let endGameScreen = null
@@ -12,9 +13,11 @@ export const setupP5 = (p5) => {
 		p5.createCanvas(1280, 720, p5.P2D)
 		area = new Area(1280, 720)
 	}
+
 	p5.draw = () => {
 
 		// udpate
+		Tween.update(performance.now())
 		if (!area.endGame) {
 			area.update()
 		}
