@@ -57,7 +57,7 @@ export default class Enemy {
 		this.signalController = new SignalController()
 
 		const machine = new StateMachine()
-		machine.replaceStates(behaviours, this)
+		machine.replaceStates(behaviours, this, this.area.getPlayer())
 		machine.changeState("idle")
 		this.stateMachine = machine
 
@@ -106,7 +106,7 @@ export default class Enemy {
 	getForwardVector() {
 		return p5.createVector(1.0, 0.0).rotate(this.rotation)
 	}
-	
+
 	moveToPlayerLastPosition() {
 		this.moveToPosition(this.playerLastPosition.copy())
 		this.playerLastPosition = null

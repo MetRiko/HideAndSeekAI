@@ -28,6 +28,10 @@ export class Player {
 		}
 	}
 
+	getPosition() {
+		return this.position
+	}
+
 	isTooFar() {
 		const newPosition = this.position.copy().add(this.moveVect)
 
