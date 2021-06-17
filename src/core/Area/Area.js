@@ -134,11 +134,17 @@ export class Area {
 		this.bushes.forEach(function(entry) {
             entry.render(p5)
         })
-        this.coin.render(p5)
-        p5.text('Time: ' + this.minutesTimer.display, 10, 40)
         this.player.render(p5)
         this.enemies.forEach(function(entry) {
             entry.render(p5)
         })
+        this.coin.render(p5)
+        p5.push()
+        // p5.fill(255, 255, 255)
+        p5.strokeWeight(2.0)
+        p5.fill(70, 140, 250)
+        p5.stroke(0, 20, 100)
+        p5.text('Time: ' + this.minutesTimer.display, 10, 40)
+        p5.pop()
 	}
 }

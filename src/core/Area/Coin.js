@@ -36,8 +36,19 @@ export class Coin {
 		p5.noStroke()
 		p5.circle(this.position.x, this.position.y, size)
 		p5.textSize(32);
-		p5.fill(255, 255, 255)
-		p5.text('Score: ' + this.score, 10, 80);
+		// p5.fill(255, 255, 255)
+	
+	
+	
+        p5.push()
+        // p5.fill(255, 255, 255)
+        p5.strokeWeight(2.0)
+        p5.fill(220, 220, 0)
+        p5.stroke(100, 20, 0)
+		p5.text('Score: ' + this.score, 10, 80)
+        p5.pop()
+	
+	
 	}
 
 }
