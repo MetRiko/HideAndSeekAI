@@ -40,8 +40,6 @@ export class StateGoToLastSeenPlayer {
 	update() {
 		if (this.isMovingForward === false) {
 
-			console.log("123")
-
 			const dirVec = this.targetPos.copy().sub(this.enemy.getPosition())
 			const enemyVec = this.enemy.getForwardVector()
 			const deltaAngle = enemyVec.angleBetween(dirVec)

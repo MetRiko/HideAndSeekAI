@@ -17,7 +17,6 @@ export class StateIdle {
 	}
 
 	onNoticePlayer() {
-		console.log("X")
 		this.machine.changeState("playerNoticed")
 	}
 

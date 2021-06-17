@@ -11,7 +11,6 @@ export class StateLookAround360 {
 	}
 
     onNoticePlayer() {
-		console.log("X")
 		this.machine.changeState("playerNoticed")
 	}
     onCatchUser() {

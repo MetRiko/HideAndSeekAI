@@ -25,7 +25,6 @@ export class StateGoToRandomPosition {
 	// }
 	
 	onNoticePlayer() {
-		console.log("X")
 		this.machine.changeState("playerNoticed")
 	}
 

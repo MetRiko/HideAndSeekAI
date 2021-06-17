@@ -15,7 +15,6 @@ export class StateGoToBush {
 	}
 
     onNoticePlayer() {
-		console.log("X")
 		this.machine.changeState("playerNoticed")
 	}
     onCatchUser() {
@@ -23,8 +22,6 @@ export class StateGoToBush {
 	}
 
 	onMovementToTargetFinished() {
-		console.log(this.machine)
-		console.log("Movement finished")
 		this.machine.changeState("checkBush")
 	}
 

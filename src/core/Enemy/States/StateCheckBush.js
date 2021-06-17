@@ -14,7 +14,6 @@ export class StateCheckBush {
 	}
 
     onNoticePlayer() {
-		console.log("X")
 		this.machine.changeState("playerNoticed")
 	}
     onCatchUser() {

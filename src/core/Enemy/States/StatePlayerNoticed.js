@@ -13,7 +13,6 @@ export class StatePlayerNoticed {
 
 	onLostUser() {
 		// setTimeout(() => {
-			console.log("TEST")
 			this.machine.changeState("goToLastSeenPlayer")
 		// }, 1000.0);
 	}
