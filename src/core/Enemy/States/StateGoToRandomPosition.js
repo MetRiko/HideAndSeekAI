@@ -8,7 +8,7 @@ export class StateGoToRandomPosition {
 	constructor(machine, enemy) {
 		this.machine = machine
 		this.enemy = enemy
-		// this.targetPos = null
+		this.targetPos = null
 
 		this.onMovementToTargetFinishedCallback = this.onMovementToTargetFinished.bind(this)
 		this.onNoticePlayerCallback = this.onNoticePlayer.bind(this)

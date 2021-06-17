@@ -25,7 +25,7 @@ export const setupP5 = (p5) => {
 		// render
 		p5.background(20)
 		if (area.endGame) {
-			endGameScreen = new EndGame(area.endTime, area.coin.score)
+			endGameScreen = new EndGame(area.endTime, area.coin.score, startNewGame)
 			endGameScreen.render()
 		} else {
 			area.render(p5)
