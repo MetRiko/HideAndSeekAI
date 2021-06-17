@@ -1,4 +1,5 @@
 import { p5 } from "../P5Core"
+import * as Tween from "@tweenjs/tween.js"
 
 const size = 20.0
 
@@ -28,6 +29,32 @@ export class Coin {
 		if(this.contains(player.position.x, player.position.y, 30)) {
 			this.score += 1
 			this.new_position()
+
+			const startRadius = 20.0
+			const bigRadius = 25.0
+			const smallRadius = 15.0
+
+			const t1 = new Tween.Tween({r: startRadius})
+				.to({r: bigRadius}, 100)
+				.easing(Tween.Easing.Sinusoidal.Out)
+				.onUpdate(({r}) => player.radius = r)
+				.onComplete(({r}) => player.radius = r)
+				
+			const t2 = new Tween.Tween({r: bigRadius})
+				.to({r: smallRadius}, 100)
+				.easing(Tween.Easing.Sinusoidal.Out)
+				.onUpdate(({r}) => player.radius = r)
+				.onComplete(({r}) => player.radius = r)
+				
+			const t3 = new Tween.Tween({r: smallRadius})
+				.to({r: startRadius}, 100)
+				.easing(Tween.Easing.Sinusoidal.Out)
+				.onUpdate(({r}) => player.radius = r)
+				.onComplete(({r}) => player.radius = r)
+
+			t1.chain(t2)
+			t2.chain(t3)
+			t1.start()
 		}
 	}
 
