@@ -42,6 +42,7 @@ export default class Enemy {
 		this.moveSpeed = 3.0
 
 		this.targetPos = null
+		this.currentBush = null
 
 		this.viewAngle = 0.3
 		this.maxGrayViewRange = 320
@@ -88,7 +89,36 @@ export default class Enemy {
 		this.stateMachine.update()
 		this.updateMovement()
 		this.updateView(player)
+		this.detectBush()
+		this.checkIfPlayerIsInTheSameBush()
 		this.signalController.update()
+	}
+
+	checkIfPlayerIsInTheSameBush() {
+		if(this.currentBush?.player_inside) {
+			this.area.end()
+		}
+	}
+	
+	detectBush() {
+		let best_distance = Infinity
+		let candidate_bush = null
+		for (const bush of this.area.bushes) {
+			let x1 = bush.position.x
+			let y1 = bush.position.y
+			let distance = (this.pos.x - x1) * (this.pos.x - x1) + (this.pos.y - y1) * (this.pos.y - y1)
+			if(distance < best_distance) {
+				best_distance = distance
+				candidate_bush = bush
+			}
+        }
+		if(candidate_bush.size * 1.3 > Math.sqrt(best_distance)) {
+			this.currentBush = candidate_bush
+		}
+		else
+		{
+			this.currentBush = null
+		}
 	}
 
 	stopMoving() {
@@ -264,6 +294,8 @@ export default class Enemy {
 	}
 
 	render(p5) {
+		const alpha = this.currentBush != null ? 60 : 255
+
 		this.stateMachine.render(p5)
 		this.renderMovementIndicators(p5)
 		this.renderView(p5)
@@ -273,10 +305,10 @@ export default class Enemy {
 		p5.push()
 		p5.translate(x, y)
 		p5.rotate(this.rotation)
-		p5.stroke(255 * 0.4, 100 * 0.2, 0)
+		p5.stroke(255 * 0.4, 100 * 0.2, 0, alpha)
 		p5.strokeWeight(4.0)
 		// p5.fill(255, 100, 0)
-		p5.fill(255 * 0.8, 100 * 0.2, 0)
+		p5.fill(255 * 0.8, 100 * 0.2, 0, alpha)
 		// p5.rotate(Math.PI * 0.5)
 		p5.circle(0, 0, 34.0)
 		
