@@ -16,3 +16,23 @@ export class StateCatched {
         // TODO: End game
 	}
 }
+
+
+// export class ExampleState {
+// 	constructor(machine, ...args) {
+// 		//...
+// 	}
+// 	init() { /*...*/ }
+// 	update() { /*...*/ }
+// 	finish() { /*...*/ }
+// }
+
+
+
+// // W kodzie poza stanami
+// this.sc.emitSignal("signal_name")
+
+// // W kodzie stanów
+// const action = () => {}
+// this.sc.connect("signal_name", action)
+// this.sc.disconnect("signal_name", action)

@@ -5,8 +5,8 @@ import { setupP5 } from '../../core/Game';
 
 const Home = () => (
 	<div class={style.home}>
-		<h1>Home</h1>
-		<p>This is the Home component.</p>
+		{/* <h1>Home</h1>
+		<p>This is the Home component.</p> */}
 		<P5Core setupP5={setupP5}/>
 	</div>
 );

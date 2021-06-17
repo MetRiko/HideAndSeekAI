@@ -1,4 +1,5 @@
-import P5Wrapper from "react-p5-wrapper"
+import loadable from '@loadable/component'
+const LoadableP5Wrapper = loadable(() => import("react-p5-wrapper"))
 
 export let p5 = null
 
@@ -10,5 +11,5 @@ export function P5Core({setupP5}) {
     // p5.draw = () => {};
   };
 
-  return <P5Wrapper sketch={sketch} />
+  return <LoadableP5Wrapper sketch={sketch} />
 }
