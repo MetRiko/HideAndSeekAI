@@ -34,7 +34,8 @@ export class Area {
 
         this.minutesTimer = new MinutesTimer()
         this.minutesTimer.start();
-        const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
+        // const interval_new_enemy = setInterval(() => {this.new_enemy()}, 30000.0)
+        const interval_new_enemy = setInterval(() => {this.new_enemy()}, 8000.0)
 
         this.endGame = false
         this.endTime = null
@@ -64,7 +65,38 @@ export class Area {
     }
 
     new_enemy() {
-        this.enemies.push(new Enemy(200, 100, this))
+
+        const margin = 50.0
+
+        const side = Math.floor(Math.random() * 4.0)
+        let x = 0.0
+        let y = 0.0
+
+        if (side === 0) { // left
+            y = Math.random() * (720.0 + margin * 2.0)
+            x = 0 - margin
+        }
+        else if (side === 1) { // right
+            y = Math.random() * (720.0 + margin * 2.0)
+            x = 1280.0 + margin            
+        }
+        else if (side === 2) {  // top
+            y = 0 - margin
+            x = Math.random() * (1280.0 + margin * 2.0)
+        }
+        else if (side === 3) { // bottom
+            y = 720.0 + margin
+            x = Math.random() * (1280.0 + margin * 2.0)
+        }
+
+        const center = p5.createVector(1280.0 * 0.5, 720.0 * 0.5)
+        const dirVec = p5.createVector(x, y).sub(center)
+        const angle = p5.createVector(1.0, 0.0).angleBetween(dirVec)
+
+        const newEnemy = new Enemy(x, y, this)
+        newEnemy.setRotation(angle)
+        this.enemies.push(newEnemy)
+        // this.enemies.push(new Enemy(200, 100, this))
     }
 
 	update() {
